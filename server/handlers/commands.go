@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"server/database"
 )
 
-// Add ping command to database
+// Add ping command to queue
 func PingC2(w http.ResponseWriter, r *http.Request) {
 	var cmd database.Command = database.Command {
 		Command_id: 0,
@@ -16,8 +15,4 @@ func PingC2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	database.InsertCommand(&cmd)
-}
-
-func Beacon(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("beaconed")
 }

