@@ -6,7 +6,7 @@ import (
 	"server/database"
 )
 
-// Add ping command to queue
+// (0) Add ping command to queue
 func PingC2(w http.ResponseWriter, r *http.Request) {
 	var cmd database.Command = database.Command {
 		Command_id: 0,

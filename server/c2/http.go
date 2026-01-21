@@ -14,9 +14,10 @@ func HttpInit(port string) {
 	/* Attacker Routes */
 	http.HandleFunc("/command/ping", handlers.PingC2)
 
-	/* Implant Routes */
-	http.HandleFunc("/beacon", handlers.Beacon)
-	http.HandleFunc("/ping", handlers.Ping)
+	/* Agent Routes */
+	http.HandleFunc("/agent/beacon", handlers.Beacon)
+	http.HandleFunc("/agent/ping", handlers.Ping)
+	http.HandleFunc("/agent/register", handlers.Register)
 
 	// Run server
 	var serverPort string = fmt.Sprintf(":%s", port)
