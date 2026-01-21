@@ -28,12 +28,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Get agent data (just name) from request
 	var agent database.Agent
+	var err error
 
-	err := json.NewDecoder(r.Body).Decode(&agent)
+	err = json.NewDecoder(r.Body).Decode(&agent)
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	database.InsertAgent(&agent)
+	err = database.InsertAgent(&agent)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 }
