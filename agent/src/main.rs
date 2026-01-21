@@ -1,11 +1,23 @@
 mod systeminfo;
 
-use systeminfo::{ get_system_info };
+use systeminfo::{ SystemInfo, get_system_info };
 
-fn main() ->  Result<(), Box<dyn std::error::Error>>  {
-    let x = get_system_info()?;
+pub struct C2Agent {
+    system_info: SystemInfo
+}
 
-    println!("{:?}", x);
+impl C2Agent {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(C2Agent {
+            system_info: get_system_info()?,
+        })
+    }
+}
+
+fn main() ->  Result<(), Box<dyn std::error::Error>> {
+    let x = C2Agent::new()?;
+
+    println!("{:?}", x.system_info);
 
     Ok(())
 }
