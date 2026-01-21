@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func printDBInfo(messages ...string) {
+func printDBInfo(messages ...any) {
 	fmt.Printf("[*DATABASE] - ")
 	for _, msg := range messages {
 		fmt.Print(msg, " ")

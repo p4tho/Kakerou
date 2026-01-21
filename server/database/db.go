@@ -22,7 +22,7 @@ func DBInit() {
 		log.Fatalf("Unable to open SQLite database: %s", err)
 	}
 	
-	// Check for connection
+	// Check connection
 	if err = DB.Ping(); err != nil {
 		log.Fatalf("Unable to open SQLite database: %s", err)
 	}
@@ -30,6 +30,6 @@ func DBInit() {
 	// Create tables
 	err = execSQLFileSplit("database/sql/tables.sql")
 	if err != nil {
-		log.Fatalf("Failed to create commands table: %s", err)
+		log.Fatalf("Failed to create tables: %s", err)
 	}
 }

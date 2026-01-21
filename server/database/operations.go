@@ -39,7 +39,7 @@ func GetAllCommands() ([]Command, error) {
 
     // Check for errors during iteration
     if err = rows.Err(); err != nil {
-		printDBInfo("Failed to retrieve command commands:", err.Error())
+		printDBInfo("Failed to retrieve commands:", err.Error())
         return nil, err
     }
 
@@ -58,7 +58,7 @@ func InsertAgent(agent *Agent) error {
 	`
 	_, err := DB.Exec(sql_stmt, agent.Name)
 	if err != nil {
-		printDBInfo("Failed to insert command:", err.Error())
+		printDBInfo("Failed to insert agent:", err.Error())
 		return err
 	}
 
@@ -87,7 +87,7 @@ func GetAllAgents() ([]Agent, error) {
 
     // Check for errors during iteration
     if err = rows.Err(); err != nil {
-		printDBInfo("Failed to retrieve command commands:", err.Error())
+		printDBInfo("Failed to retrieve agents:", err.Error())
         return nil, err
     }
 
