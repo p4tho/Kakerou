@@ -1,24 +1,43 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"encoding/json"
 
 	"server/database"
 )
 
-// Retrieve commands from database
+// Retrieve commands from database (POST)
 func Beacon(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("beaconed")
+	// Only accpet post requests
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+	// Parse agent's request body
+    var req struct {
+        Name string `json:"name"`
+        UID  int 	`json:"uid"`
+    }
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+    log.Printf("%s (UID=%d) beaconed\n",
+		req.Name,
+		req.UID,
+	)
 }
 
-// Ping server to check connection
+// Ping server to check connection (GET)
 func Ping(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("[*] Pinged from %s\n", r.RemoteAddr)
+    log.Printf("Pinged from %s\n", r.RemoteAddr)
 }
 
-// Register agent to database
+// Register agent to database (POST)
 func Register(w http.ResponseWriter, r *http.Request) {
 	// Only accept post requests
     if r.Method != http.MethodPost {

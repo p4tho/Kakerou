@@ -4,14 +4,11 @@ import (
 	"strings"
 	"os"
 	"fmt"
+    "log"
 )
 
-func printDBInfo(messages ...any) {
-	fmt.Printf("[*DATABASE] - ")
-	for _, msg := range messages {
-		fmt.Print(msg, " ")
-	}
-	fmt.Println()
+func printDBInfo(message any) {
+	log.Printf("[*DATABASE] - %v\n", message)
 }
 
 func execSQLFileSplit(filepath string) error {
@@ -29,7 +26,7 @@ func execSQLFileSplit(filepath string) error {
         }
         _, err := DB.Exec(stmt)
         if err != nil {
-            return fmt.Errorf("failed to execute statement: %s, error: %w", stmt, err)
+            return fmt.Errorf("Failed to execute statement: %s, error: %w", stmt, err)
         }
     }
     return nil
