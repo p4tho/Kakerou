@@ -2,7 +2,8 @@ use cryptify::encrypt_string;
 use hostname::get;
 use local_ip_address::local_ip;
 use sysinfo::{
-    Disks, System,
+    Disks, 
+    System,
 };
 
 #[derive(Debug)]

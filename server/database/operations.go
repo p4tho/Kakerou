@@ -51,20 +51,26 @@ func GetAllCommands() ([]Command, error) {
 /*
 Agent Operations
 */
-func InsertAgent(agent *Agent) error {
+func InsertAgent(agent *Agent) (int64, error) {
 	sql_stmt := `
 		INSERT INTO agents (name)
 		VALUES (?)
 	`
-	_, err := DB.Exec(sql_stmt, agent.Name)
+	result, err := DB.Exec(sql_stmt, agent.Name)
 	if err != nil {
 		printDBInfo("Failed to insert agent:", err.Error())
-		return err
+		return -1, err
 	}
 
-	printDBInfo("Agent inserted:", agent.Name)
+	uid, err := result.LastInsertId()
+	if err != nil {
+		printDBInfo("Failed to get last insert id:", err.Error())
+		return 0, err
+	}
 
-	return nil
+	printDBInfo("Agent inserted:", agent.Name, "UID:", uid)
+
+	return uid, nil
 }
 
 func GetAllAgents() ([]Agent, error) {

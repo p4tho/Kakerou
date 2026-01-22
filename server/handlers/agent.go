@@ -36,9 +36,20 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = database.InsertAgent(&agent)
+	uid, err := database.InsertAgent(&agent)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	// Return uid in response
+	response := struct {
+		UID  int64  `json:"uid"`
+	}{
+		UID:  uid,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
 }
