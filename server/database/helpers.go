@@ -4,12 +4,7 @@ import (
 	"strings"
 	"os"
 	"fmt"
-    "log"
 )
-
-func printDBInfo(message any) {
-	log.Printf("[*DATABASE] - %v\n", message)
-}
 
 func execSQLFileSplit(filepath string) error {
     content, err := os.ReadFile(filepath)

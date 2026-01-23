@@ -1,7 +1,7 @@
 package database
 
 import (
-    "fmt"
+    "log"
 )
 
 /*
@@ -14,11 +14,11 @@ func InsertCommand(c *Command) error {
 	`
 	_, err := DB.Exec(sql_stmt, c.Command_id, c.Command, c.Status)
 	if err != nil {
-		printDBInfo(fmt.Sprintf("Failed to insert command: %v", err.Error()))
+		log.Printf("Failed to insert command: %v\n", err.Error())
 		return err
 	}
 
-	printDBInfo(fmt.Sprintf("Command inserted: %v", c.Command))
+	log.Printf("Command inserted: %v\n", c.Command)
 
 	return nil
 }
@@ -43,11 +43,11 @@ func GetAllCommands() ([]Command, error) {
 
     // Check for errors during iteration
     if err = rows.Err(); err != nil {
-		printDBInfo(fmt.Sprintf("Failed to retrieve commands: %v", err.Error()))
+		log.Printf("Failed to retrieve commands: %v\n", err.Error())
         return nil, err
     }
 
-	printDBInfo("Retrieved commands!")
+	log.Println("Retrieved commands!")
 
     return commands, nil
 }
@@ -62,17 +62,17 @@ func InsertAgent(agent *Agent) (int64, error) {
 	`
 	result, err := DB.Exec(sql_stmt, agent.Name)
 	if err != nil {
-		printDBInfo(fmt.Sprintf("Failed to insert agent: %v", err.Error()))
+		log.Printf("Failed to insert agent: %v\n", err.Error())
 		return -1, err
 	}
 
 	uid, err := result.LastInsertId()
 	if err != nil {
-		printDBInfo(fmt.Sprintf("Failed to get last insert id: %v", err.Error()))
+		log.Printf("Failed to get last insert id: %v\n", err.Error())
 		return 0, err
 	}
 
-	printDBInfo(fmt.Sprintf("Agent inserted: %s (UID=%d)", agent.Name, uid))
+	log.Printf("Agent inserted: %s (UID=%d)\n", agent.Name, uid)
 
 	return uid, nil
 }
@@ -97,11 +97,11 @@ func GetAllAgents() ([]Agent, error) {
 
     // Check for errors during iteration
     if err = rows.Err(); err != nil {
-		printDBInfo(fmt.Sprintf("Failed to retrieve agents: %v", err.Error()))
+		log.Printf("Failed to retrieve agents: %v\n", err.Error())
         return nil, err
     }
 
-	printDBInfo("Retrieved agents!")
+	log.Println("Retrieved agents!")
 
     return agents, nil
 }
