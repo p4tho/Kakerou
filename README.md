@@ -9,3 +9,7 @@ Implants are supported on Windows.
 # Features
 - TBD
 
+# Commands
+|   command #   | command number |   description   |
+| ------------- | -------------- | --------------- |
+|       0       |      ping      | ping C2 server  |
