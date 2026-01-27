@@ -18,5 +18,4 @@ pub struct Command {
     pub uid: u64,
     pub command_id: u64,
     pub command: String,
-    pub status: i8,
 }

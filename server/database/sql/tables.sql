@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS commands (
     uid         INTEGER PRIMARY KEY AUTOINCREMENT,
     command_id 	INTEGER NOT NULL,
-    command 	TEXT,
-    status 		INTEGER NOT NULL
+    command 	TEXT
 );
 
 CREATE TABLE IF NOT EXISTS agents (

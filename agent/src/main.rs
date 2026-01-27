@@ -104,6 +104,7 @@ impl C2Agent {
         }
     }
 
+    /// Send beacon to get information from server
     pub async fn send_beacon(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         let mut new_command_count = 0;
         let beacon_url = format!("{}/agent/beacon", self.agent_config.server_url);
@@ -136,7 +137,7 @@ impl C2Agent {
             }
         }
 
-        info!("Added {} new commands", new_command_count);
+        info!("Added {} new command(s)", new_command_count);
 
         Ok(())
     }

@@ -17,18 +17,18 @@ func Beacon(w http.ResponseWriter, r *http.Request) {
     }
 
 	// Parse agent's request body
-    var req struct {
+    var request struct {
         Name string `json:"name"`
         UID  int 	`json:"uid"`
     }
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
     log.Printf("%s (UID=%d) beaconed\n",
-		req.Name,
-		req.UID,
+		request.Name,
+		request.UID,
 	)
 
 	// Get commands from database

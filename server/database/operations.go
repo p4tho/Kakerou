@@ -9,10 +9,10 @@ Command Operations
 */
 func InsertCommand(c *Command) error {
 	sql_stmt := `
-		INSERT INTO commands (command_id, command, status)
-		VALUES (?, ?, ?)
+		INSERT INTO commands (command_id, command)
+		VALUES (?, ?)
 	`
-	_, err := DB.Exec(sql_stmt, c.Command_id, c.Command, c.Status)
+	_, err := DB.Exec(sql_stmt, c.Command_id, c.Command)
 	if err != nil {
 		log.Printf("Failed to insert command: %v\n", err.Error())
 		return err
@@ -24,7 +24,7 @@ func InsertCommand(c *Command) error {
 }
 
 func GetAllCommands() ([]Command, error) {
-    rows, err := DB.Query(`SELECT uid, command_id, command, status FROM commands`)
+    rows, err := DB.Query(`SELECT uid, command_id, command FROM commands`)
     if err != nil {
         return nil, err
     }
@@ -36,7 +36,7 @@ func GetAllCommands() ([]Command, error) {
     // Add each row of commands table
     for rows.Next() {
         var command Command
-        err := rows.Scan(&command.Uid, &command.Command_id, &command.Command, &command.Status)
+        err := rows.Scan(&command.Uid, &command.Command_id, &command.Command)
         if err != nil {
             return nil, err
         }
