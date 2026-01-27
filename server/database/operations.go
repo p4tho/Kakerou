@@ -30,8 +30,10 @@ func GetAllCommands() ([]Command, error) {
     }
     defer rows.Close()
 
-    var commands []Command
+    // Initialize emoty array to send
+    commands := []Command{}
 
+    // Add each row of commands table
     for rows.Next() {
         var command Command
         err := rows.Scan(&command.Uid, &command.Command_id, &command.Command, &command.Status)
@@ -46,8 +48,6 @@ func GetAllCommands() ([]Command, error) {
 		log.Printf("Failed to retrieve commands: %v\n", err.Error())
         return nil, err
     }
-
-	log.Println("Retrieved commands!")
 
     return commands, nil
 }

