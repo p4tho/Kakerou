@@ -94,7 +94,7 @@ func GetAgentCommandsList(agent_uid int) ([]int, error) {
     if err != nil {
         return nil, err
     }
-    if executed_commands_list_str == "" { // Return empty list it the database string was empty
+    if executed_commands_list_str == "" { // Return empty list if the database string is empty
         return []int{}, nil
     }
     executed_commands_list_arr = strings.Split(executed_commands_list_str, ",")

